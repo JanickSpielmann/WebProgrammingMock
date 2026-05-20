@@ -1,0 +1,31 @@
+<!-- TODO: Template für eine Liste von Items (z.B. Bücher, Todos, Produkte) -->
+<div class="list-container">
+    <!-- TODO: Überschrift für die Liste -->
+    <h2>Item List</h2>
+    <!-- TODO: Suchfeld für Filtering (optional) -->
+    <div class="search-bar">
+        <input type="text"
+               id="search-input"
+               placeholder="Search items..."
+               data-action="search">
+    </div>
+
+    <!--
+    TODO: Liste wird dynamisch mit JavaScript befüllt
+        Jedes Item wird als <li> mit JavaScript erstellt
+        Die leere <ul> dient als Container
+   -->
+    <ul class="item-list">
+        <!-- TODO Items werden hier dynamisch eingefügt -->
+    </ul>
+
+    <!-- TODO: Nachricht wenn keine Items vorhanden -->
+    <p class="no-items" style="display: none;">
+        No items found.
+    </p>
+
+    <!-- TODO: Loading Indicator (optional) -->
+    <div class="loading" style="display: none;">
+        <p>Loading items...</p>
+    </div>
+</div>

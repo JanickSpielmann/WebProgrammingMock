@@ -1,0 +1,37 @@
+<!-- TODO: Template für Detail-Ansicht eines einzelnen Items -->
+<div class="detail-container">
+    <!-- TODO: Zurück-Button zur Navigation -->
+    <button class="back-button" data-action="back">
+        &larr; Back to List
+    </button>
+    <!-- TODO: Überschrift mit Titel des Items -->
+    <h2 data-field="title">Item Title</h2>
+
+    <!--
+    TODO: Detail-Informationen
+        data-field Attribute markieren Platzhalter für Daten
+        Diese werden von JavaScript befüllt (siehe util.js interpolate)
+    -->
+    <div class="detail-content">
+        <div class="detail-image">
+            <img data-field="image" src="" alt="Item Image">
+        </div>
+        <div class="detail-info">
+            <p><strong>ID:</strong> <span data-field="id"></span></p>
+            <p><strong>Author:</strong> <span data-field="author"></span></p>
+            <p><strong>Price:</strong> Fr. <span data-field="price"></span></p>
+            <p><strong>Description:</strong></p>
+            <p data-field="description" class="description-text"></p>
+        </div>
+    </div>
+
+    <!-- TODO: Action Buttons -->
+    <div class="actions">
+        <button class="btn-primary" data-action="order">
+            Order Now
+        </button>
+        <button class="btn-secondary" data-action="edit">
+            Edit
+        </button>
+    </div>
+</div>
