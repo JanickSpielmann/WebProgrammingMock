@@ -22,8 +22,8 @@ export default {
 function renderBook(view, book) {
 	const template =
 		`<li>
-			<img src="${book.image}" alt="${book.title}"/>
-			<h2>${book.title}</h2>
+			<img src="${book.image}" alt="${book.title}"class="image"/>
+			<h2 class="title">${book.title}</h2>
 			<h4>${book.author}</h4>	
 			<span class="price">Fr. ${book.price.toFixed(2)}</span>
 			<button class="buy" data-isbn="${book.isbn}">Buy now</button>
@@ -34,5 +34,11 @@ function renderBook(view, book) {
 	li.querySelector('.buy').addEventListener('click', e => {
 		router.navigate('/order', book.isbn);
 	});
+    li.querySelector('.image').addEventListener('click', e => {
+        router.navigate('/book', book.isbn);
+    });
+    li.querySelector('.title').addEventListener('click', e => {
+        router.navigate('/book', book.isbn);
+    });
 	view.querySelector('ul').append(li);
 }
