@@ -3,7 +3,6 @@ package bookstore.controller;
 import bookstore.model.Book;
 import bookstore.model.BookNotFoundException;
 import bookstore.model.BookService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +16,8 @@ import java.io.PrintWriter;
  * Dieses Servlet zeigt das klassische MVC-Prinzip mit Servlets.
  * <p>
  * Controller:
- * - Diese Klasse nimmt HTTP Requests entgegen.
- * - Sie liest Request-Parameter aus.
+ * - Diese Klasse nimmt HTTP reqs entgegen.
+ * - Sie liest req-Parameter aus.
  * - Sie entscheidet, welche Aktion ausgeführt wird.
  * - Sie bereitet Daten für die View vor.
  * <p>
@@ -48,16 +47,16 @@ public class __MvcServletTemplate extends HttpServlet {
      * - Suchresultate anzeigen
      * - Detailseite anzeigen
      * <p>
-     * GET Requests sollen grundsätzlich keine Daten verändern.
+     * GET reqs sollen grundsätzlich keine Daten verändern.
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String isbn = request.getParameter("isbn");
+        String isbn = req.getParameter("isbn");
 
         /* TODO: Wenn kein ISBN-Parameter vorhanden, Suchformular anzeigen */
         if (isbn == null || isbn.isBlank()) {
-            renderSearchForm(response, null, null);
+            renderSearchForm(resp, null, null);
             return;
         }
 
@@ -67,17 +66,17 @@ public class __MvcServletTemplate extends HttpServlet {
             /*
              TODO:
                 In MVC werden Daten für die View vorbereitet.
-                In vielen Projekten würde man diese Werte mit request.setAttribute(...)
+                In vielen Projekten würde man diese Werte mit req.setAttribute(...)
                 an eine Template Engine oder JSP weitergeben.
                 Beispiel:
-                    request.setAttribute("book", book);
-                    request.getRequestDispatcher("/WEB-INF/templates/book.jsp").forward(request, response);
+                    req.setAttribute("book", book);
+                    req.getreqDispatcher("/WEB-INF/templates/book.jsp").forward(req, resp);
              */
-            request.setAttribute("book", book);
-            renderBookPage(response, book);
+            req.setAttribute("book", book);
+            renderBookPage(resp, book);
         } catch (BookNotFoundException ex) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            renderSearchForm(response, isbn, "Kein Buch mit dieser ISBN gefunden.");
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            renderSearchForm(resp, isbn, "Kein Buch mit dieser ISBN gefunden.");
         }
     }
 
@@ -92,17 +91,16 @@ public class __MvcServletTemplate extends HttpServlet {
      * - Danach entweder Seite erneut anzeigen oder weiterleiten
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        /* TODO: Request-Parameter auslesen und validieren */
-        String isbn = request.getParameter("isbn");
+        /* TODO: req-Parameter auslesen und validieren */
+        String isbn = req.getParameter("isbn");
 
         if (isbn == null || isbn.isBlank()) {
 
-            /* TODO: Bei Validierungsfehler: 400 Bad Request und Formular erneut anzeigen */
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            renderSearchForm(response, isbn, "Die ISBN darf nicht leer sein.");
+            /* TODO: Bei Validierungsfehler: 400 Bad req und Formular erneut anzeigen */
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            renderSearchForm(resp, isbn, "Die ISBN darf nicht leer sein.");
             return;
         }
 
@@ -112,8 +110,8 @@ public class __MvcServletTemplate extends HttpServlet {
             Nach einem erfolgreichen POST wird oft auf eine GET URL weitergeleitet.
             Dadurch wird verhindert, dass ein Browser-Refresh den POST nochmals sendet.
          */
-        String target = request.getContextPath() + "/mvc-template?isbn=" + encodeSimple(isbn);
-        response.sendRedirect(target);
+        String target = req.getContextPath() + "/mvc-template?isbn=" + encodeSimple(isbn);
+        resp.sendRedirect(target);
     }
 
     /**
@@ -121,16 +119,16 @@ public class __MvcServletTemplate extends HttpServlet {
      * Diese Methode stellt die View für das Suchformular dar.
      * <p>
      * In einer Prüfung ist wichtig:
-     * - response.setContentType(...)
-     * - PrintWriter über response.getWriter()
+     * - resp.setContentType(...)
+     * - PrintWriter über resp.getWriter()
      * - HTML sauber und vollständig ausgeben
      * - Benutzerwerte nicht ungefiltert in HTML schreiben
      */
-    private void renderSearchForm(HttpServletResponse response, String isbn, String errorMessage) throws IOException {
+    private void renderSearchForm(HttpServletResponse resp, String isbn, String errorMessage) throws IOException {
 
-        response.setContentType(CONTENT_TYPE_HTML);
+        resp.setContentType(CONTENT_TYPE_HTML);
 
-        try (PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = resp.getWriter()) {
             out.println("<!doctype html>");
             out.println("<html lang=\"de\">");
             out.println("<head>");
@@ -164,10 +162,10 @@ public class __MvcServletTemplate extends HttpServlet {
      * Der Controller hat vorher entschieden, welches Buch angezeigt wird.
      * Die View kümmert sich nur noch um die Darstellung.
      */
-    private void renderBookPage(HttpServletResponse response, Book book) throws IOException {
-        response.setContentType(CONTENT_TYPE_HTML);
+    private void renderBookPage(HttpServletResponse resp, Book book) throws IOException {
+        resp.setContentType(CONTENT_TYPE_HTML);
 
-        try (PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = resp.getWriter()) {
             out.println("<!doctype html>");
             out.println("<html lang=\"de\">");
             out.println("<head>");
@@ -201,7 +199,7 @@ public class __MvcServletTemplate extends HttpServlet {
      * Minimales HTML Escaping.
      *
      * Wichtig:
-     * Werte aus Requests oder dem Model sollten nicht ungefiltert in HTML landen.
+     * Werte aus reqs oder dem Model sollten nicht ungefiltert in HTML landen.
      * Sonst entsteht schnell ein XSS-Problem.
      */
     private String escapeHtml(String value) {
@@ -209,6 +207,58 @@ public class __MvcServletTemplate extends HttpServlet {
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;");
+    }
+
+    /**
+     * TODO:
+     * doDelete wird verwendet, um eine Ressource anhand ihrer ID zu löschen.
+     * <p>
+     * Voraussetzungen:
+     * - Der Benutzer muss eingeloggt sein (Session mit Attribut "user").
+     * - Die URL muss die ID der Ressource enthalten, z.B. /api/orders/3
+     * <p>
+     * Mögliche HTTP-Statuscodes:
+     * - 200 OK:                  Ressource wurde erfolgreich gelöscht.
+     * - 400 Bad Request:         Kein Pfad angegeben oder ID ist keine Zahl.
+     * - 401 Unauthorized:        Benutzer ist nicht eingeloggt.
+     * - 404 Not Found:           Keine Ressource mit dieser ID gefunden.
+     * - 405 Method Not Allowed:  Pfad ist nur "/" ohne ID.
+     */
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp){
+
+        /* Login-Check: Session holen ohne neue zu erstellen (false), dann User-Attribut prüfen */
+        var session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        /* TODO: Pfad aus der URL lesen, z.B. /api/orders/3 → pathInfo = "/3" */
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        if (pathInfo.equals("/")) {
+            resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            return;
+        }
+
+        try {
+            /*
+             * TODO:
+             *   ID aus dem Pfad lesen und an den Service übergeben.
+             *   pathInfo.substring(1) entfernt den führenden Slash → "3"
+             */
+            int id = Integer.parseInt(pathInfo.substring(1));
+            BookService.getBook(String.valueOf(id));
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } catch (NumberFormatException ex) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (BookNotFoundException ex) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 
     /*
